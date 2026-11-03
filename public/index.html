@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Create user</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 420px; margin: 40px auto; padding: 0 16px; }
+    label { display: block; margin-top: 12px; }
+    input { width: 100%; padding: 8px; margin-top: 4px; box-sizing: border-box; }
+    button { margin-top: 16px; padding: 10px 16px; }
+    #result { margin-top: 16px; white-space: pre-wrap; font-family: monospace; }
+    .error { color: #b00020; }
+  </style>
+</head>
+<body>
+  <h1>Create user</h1>
+  <form id="form">
+    <label>Name <input name="name" required></label>
+    <label>Email <input name="email" type="email" required></label>
+    <label>Balance <input name="balance" type="number" min="0" step="1" value="0" required></label>
+    <button id="submit" type="submit">Create</button>
+  </form>
+  <div id="result"></div>
+
+  <script>
+    const form = document.getElementById("form");
+    const btn = document.getElementById("submit");
+    const result = document.getElementById("result");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      btn.disabled = true;
+      result.textContent = "";
+      result.className = "";
+      const data = Object.fromEntries(new FormData(form));
+      data.balance = Number(data.balance);
+      try {
+        const res = await fetch("/users", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify(data),
+        });
+        const body = await res.json();
+        result.textContent = `${res.status} ${JSON.stringify(body)}`;
+        if (!res.ok) result.className = "error";
+        else form.reset();
+      } catch (err) {
+        result.textContent = `request failed: ${err.message}`;
+        result.className = "error";
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
