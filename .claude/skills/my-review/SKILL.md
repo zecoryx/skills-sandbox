@@ -7,7 +7,7 @@ disable-model-invocation: true
 
 # my-review
 
-Review only. Never commit, never push. Real testing is `/local-test`, PR is `/pr-review`.
+Review only. Never commit, never push. Real testing is `/local-test`, PR is `/gh-push`.
 Requires the `pr-review-toolkit` plugin (`/plugin install pr-review-toolkit@claude-plugins-official`). Missing → stop and say so.
 
 ## 1. Scope
@@ -35,9 +35,9 @@ No findings → "No findings."
 |---|----------|------|
 | A | general-purpose | Run the `code-review` skill at `medium` on the diff vs base |
 | B | general-purpose | Run the `ponytail-review` skill on the diff vs base |
-| C | `pr-review-toolkit:silent-failure-hunter` | Error handling, swallowed failures, bad fallbacks in the diff |
-| D | `pr-review-toolkit:pr-test-analyzer` | Behaviour in the diff with no test, missing edge cases |
-| E | `pr-review-toolkit:comment-analyzer` | Comments that lie, rot, or restate obvious code |
+| C | `pr-review-toolkit:silent-failure-hunter`, model `sonnet` | Error handling, swallowed failures, bad fallbacks in the diff |
+| D | `pr-review-toolkit:pr-test-analyzer`, model `sonnet` | Behaviour in the diff with no test, missing edge cases |
+| E | `pr-review-toolkit:comment-analyzer`, model `sonnet` | Comments that lie, rot, or restate obvious code |
 
 Any reviewer fails or is unavailable → stop, tell the user which one and why.
 After all return: `git status --short` must match step 1. If a reviewer edited files → stop, show the diff.
@@ -51,6 +51,7 @@ Send each reviewer (SendMessage) the other four's findings. Ask for one line per
 - Duplicates (same file, same problem) → one item, highest severity, `Flagged by: A, C`.
 - Disputed → keep, add `Disputed by B: <reason>`.
 - Order BLOCKER → CONCERN → SUGGESTION → QUESTION, number 1..N. Header: intent + counts per severity + worst item + `Excluded:` list.
+- Rewrite every item in B1-level English before saving. Reviewers write for machines; the file is for the user.
 
 ## 5. Grill
 - Show the header first. Then one item at a time: number, severity, title, `file:line`, What/Why/Fix, dispute if any. Ask: **Fix? (yes / no)**
@@ -59,4 +60,4 @@ Send each reviewer (SendMessage) the other four's findings. Ask for one line per
 
 ## 6. Fix
 - Fix every `yes`. Smallest change that resolves it. Keep validation and error handling.
-- Show `git diff --stat` + fixed item numbers. Stop. Next: `/local-test`, then `/pr-review`.
+- Show `git diff --stat` + fixed item numbers. Stop. Next: `/local-test`, then `/gh-push`.

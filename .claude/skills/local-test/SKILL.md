@@ -7,7 +7,9 @@ disable-model-invocation: true
 
 # local-test
 
-Testing only. Never commit, never push. Never read `.env*`. Code review is `/my-review`, PR is `/pr-review`.
+Testing only. Never commit, never push. Never read `.env*`. Code review is `/my-review`, PR is `/gh-push`.
+Never edit a repo file before step 6. Port in use, missing tool, no permission → stop and ask the user; do not work around it by changing the project.
+Table cells and notes in B1-level English: short, plain words.
 
 ## 1. Scope
 - Base = `$0` if given, else `main`, else `master`. Diff = `git diff <base>...HEAD` + `git diff HEAD`. Empty → stop.
@@ -36,4 +38,4 @@ Then one FAIL at a time: show it, ask **Fix? (yes / no)**. Wait. Plain-line answ
 ## 6. Fix and re-run
 - Fix every `yes`. Smallest change. Keep validation and error handling. Re-run only the fixed cases, update the table.
 - `reset` exists → run it. Else list what was seeded and leave the DB.
-- Show `git diff --stat`. Stop. Next: `/my-review`, then `/pr-review`.
+- Show `git diff --stat`. Stop. Next: `/my-review`, then `/gh-push`.
